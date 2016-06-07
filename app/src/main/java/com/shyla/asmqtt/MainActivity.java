@@ -5,143 +5,67 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.android.service.MqttTraceHandler;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import com.shyla.security.CustomSecurity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MQTT.Main";
 
-    public static final String serverUri = "tcp://10.75.3.123:1883";
-    public static final String clientId = "paho-mqtt-clientid-001";
-
-    private MqttAndroidClient mqttAndroidClient;
+    private RemoteControl mRemoteControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate");
+
         setContentView(R.layout.activity_main);
-        findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                connect();
-            }
-        });
-        findViewById(R.id.btn_disconnect).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                disconnect();
-            }
-        });
+        findViewById(R.id.btn_connect).setOnClickListener(this);
+        findViewById(R.id.btn_subscribe).setOnClickListener(this);
+        findViewById(R.id.btn_publish).setOnClickListener(this);
+        findViewById(R.id.btn_disconnect).setOnClickListener(this);
+        findViewById(R.id.btn_ssl).setOnClickListener(this);
 
-    }
-
-    private void connect() {
-        MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
-        mqttConnectOptions.setKeepAliveInterval(1000);
-        mqttConnectOptions.setUserName("user-name:summer");
-        String msg = "hahaha";
-        mqttConnectOptions.setWill("topic:111", msg.getBytes(), 0, true);
-
-        mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId);
-        mqttAndroidClient.setTraceEnabled(true);
-        mqttAndroidClient.setTraceCallback(new MqttTraceHandler() {
-            @Override
-            public void traceDebug(String s, String s1) {
-                Log.v(TAG, "mqtt trace debug, s : " + s + ", s1 : " + s1);
-            }
-
-            @Override
-            public void traceError(String s, String s1) {
-                Log.v(TAG, "mqtt trace error, s : " + s + ", s1 : " + s1);
-            }
-
-            @Override
-            public void traceException(String s, String s1, Exception e) {
-                e.printStackTrace();
-                Log.v(TAG, "mqtt trace exception, s : " + s + ", e : " + e.toString());
-            }
-        });
-
-        mqttAndroidClient.setCallback(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable throwable) {
-                Log.v(TAG, "mqtt callback connectionLost");
-                if (throwable != null)
-                    Log.v(TAG, "mqtt callback connectionLost : " + throwable.toString());
-            }
-
-            @Override
-            public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-                Log.v(TAG, "mqtt callback messageArrived, s : " + s + "throwable : " + mqttMessage.toString());
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                Log.v(TAG, "mqtt callback deliveryComplete, s : " + iMqttDeliveryToken.toString());
-            }
-        });
-
-        try {
-            mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken iMqttToken) {
-                    Log.v(TAG, "onSuccess");
-                }
-
-                @Override
-                public void onFailure(IMqttToken iMqttToken, Throwable throwable) {
-                    Log.v(TAG, "onFailure, " + throwable.toString());
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void disconnect() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mqttAndroidClient.disconnect();
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                mqttAndroidClient.close();
-            }
-        }).start();
+        RemoteControl.createInstance(getApplicationContext());
+        mRemoteControl = RemoteControl.getInstance();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mqttAndroidClient == null)
-            return;
-        mqttAndroidClient.registerResources(this);
+        mRemoteControl.registerResources(this);
     }
 
     @Override
     protected void onPause() {
+        mRemoteControl.unregisterResources();
         super.onPause();
-        if (mqttAndroidClient == null)
-            return;
-        mqttAndroidClient.unregisterResources();
     }
 
     @Override
     protected void onDestroy() {
+        Log.v(TAG, "onDestroy");
+        RemoteControl.destroyInstance();
         super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_connect:
+                mRemoteControl.connect();
+                break;
+            case R.id.btn_subscribe:
+                mRemoteControl.subscribe();
+                break;
+            case R.id.btn_publish:
+                mRemoteControl.publish();
+                break;
+            case R.id.btn_disconnect:
+                mRemoteControl.disconnect();
+                break;
+            case R.id.btn_ssl:
+                CustomSecurity security = new CustomSecurity(getApplicationContext());
+                security.keyStore();
+                break;
+        }
     }
 }

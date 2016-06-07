@@ -17,9 +17,27 @@
         android:text="connect" />
 
     <Button
+        android:id="@+id/btn_subscribe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="subscribe" />
+
+    <Button
+        android:id="@+id/btn_publish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="publish" />
+
+    <Button
         android:id="@+id/btn_disconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="disconnect" />
+
+    <Button
+        android:id="@+id/btn_ssl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ssl" />
 
 </LinearLayout>

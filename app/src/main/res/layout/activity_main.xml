@@ -38,6 +38,6 @@
         android:id="@+id/btn_ssl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ssl" />
+        android:text="sslConnect" />
 
 </LinearLayout>

@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.shyla.security.CustomSecurity;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MQTT.Main";
 
@@ -51,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_connect:
-                mRemoteControl.connect();
+                mRemoteControl.connect(false);
                 break;
             case R.id.btn_subscribe:
                 mRemoteControl.subscribe();
@@ -63,9 +61,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mRemoteControl.disconnect();
                 break;
             case R.id.btn_ssl:
-                CustomSecurity security = new CustomSecurity(getApplicationContext());
-                security.keyStore();
+                mRemoteControl.connect(true);
                 break;
         }
     }
 }
+
+
+

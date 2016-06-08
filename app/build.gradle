@@ -23,8 +23,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
-    
     // mqtt libs, service and mqtt are separated in this version
     compile files('libs/org.eclipse.paho.android.service-1.0.2.jar')
     compile files('libs/org.eclipse.paho.client.mqttv3-1.0.2.jar')
+    compile files('libs/bcprov-jdk16-146.jar')
 }

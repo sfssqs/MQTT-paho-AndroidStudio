@@ -3,6 +3,8 @@ package com.shyla.asmqtt;
 import android.content.Context;
 import android.util.Log;
 
+import com.shyla.security.SslUtil;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -18,11 +20,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class RemoteControl {
     public static final String TAG = "RemoteControl";
 
-    public static final String serverUri = "tcp://10.75.3.123:1883";
+    public static final String URI_DEFAULT = "tcp://10.75.3.123:1883";
+    public static final String URI_SSL = "ssl://10.75.3.123:8883";
     public static final String clientId = "paho-mqtt-clientid-001";
 
     private MqttAndroidClient mMqttAndroidClient;
     private Context mContext;
+    private String requestUri;
 
     public RemoteControl(Context context) {
         mContext = context;
@@ -41,7 +45,6 @@ public class RemoteControl {
         if (sInstance == null)
             return;
 
-        sInstance.release();
         sInstance = null;
     }
 
@@ -63,14 +66,25 @@ public class RemoteControl {
         mMqttAndroidClient.unregisterResources();
     }
 
-    public void connect() {
+    public void connect(boolean ssl) {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setKeepAliveInterval(1000);
         mqttConnectOptions.setUserName("user-name:summer");
         String msg = "hahaha";
         mqttConnectOptions.setWill("topic:111", msg.getBytes(), 0, true);
 
-        mMqttAndroidClient = new MqttAndroidClient(mContext.getApplicationContext(), serverUri, clientId);
+        if (ssl) {
+            requestUri = URI_SSL;
+            try {
+                mqttConnectOptions.setSocketFactory(SslUtil.getSocketFactory(mContext));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            requestUri = URI_DEFAULT;
+        }
+
+        mMqttAndroidClient = new MqttAndroidClient(mContext.getApplicationContext(), requestUri, clientId);
         mMqttAndroidClient.setTraceEnabled(true);
         mMqttAndroidClient.setTraceCallback(new TraceHandler());
         mMqttAndroidClient.setCallback(mMqttCallback);
@@ -106,17 +120,13 @@ public class RemoteControl {
         }
     }
 
-    public void subscribe () {
+    public void subscribe() {
         try {
             String topic = "control";
             mMqttAndroidClient.subscribe(topic, 0);
         } catch (MqttException e) {
             e.printStackTrace();
         }
-    }
-
-    private void release() {
-        mMqttAndroidClient.close();
     }
 
     private IMqttActionListener mIMqttActionListener = new IMqttActionListener() {

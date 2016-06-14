@@ -10,53 +10,161 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.shyla.asmqtt.MainActivity">
 
-    <Button
-        android:id="@+id/btn_connect"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="connect" />
+        android:layout_marginTop="10dp"
+        android:text="Operator" />
 
-    <Button
-        android:id="@+id/btn_subscribe"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#2828FF" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_lock_door"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="LockDoor" />
+
+        <Button
+            android:id="@+id/btn_unlock_door"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="UnlockDoor" />
+
+        <Button
+            android:id="@+id/btn_open_trunk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="OpenTrunk" />
+    </LinearLayout>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="subscribe" />
+        android:layout_marginTop="20dp"
+        android:text="Connector" />
 
-    <Button
-        android:id="@+id/btn_publish"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#2828FF" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="connect" />
+
+        <Button
+            android:id="@+id/btn_ssl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="sslConnect" />
+
+        <Button
+            android:id="@+id/btn_disconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="disconnect" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_subscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="subscribe" />
+
+        <Button
+            android:id="@+id/btn_publish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="publish" />
+    </LinearLayout>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="publish" />
+        android:layout_marginTop="20dp"
+        android:text="SSL Parser" />
 
-    <Button
-        android:id="@+id/btn_disconnect"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#2828FF" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_parse_bks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="BKSFile" />
+
+        <Button
+            android:id="@+id/btn_parse_keystore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="KeystoreFile" />
+
+        <Button
+            android:id="@+id/btn_parse_tesla"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TeslaKeystore" />
+
+    </LinearLayout>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="disconnect" />
+        android:layout_marginTop="20dp"
+        android:text="SSL Parser" />
 
-    <Button
-        android:id="@+id/btn_ssl"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#2828FF" />
+
+    <TextView
+        android:id="@+id/text_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="sslConnect" />
-
-    <Button
-        android:id="@+id/btn_parse_bks"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ParseBKSFile" />
-
-    <Button
-        android:id="@+id/btn_parse_keystore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ParseKeystoreFile" />
-
-    <Button
-        android:id="@+id/btn_parse_tesla"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ParseTeslaKeystore" />
-
-
+        android:layout_marginTop="20dp"
+        android:text="Received info : NULL" />
 </LinearLayout>

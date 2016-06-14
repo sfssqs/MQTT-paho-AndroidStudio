@@ -14,6 +14,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * Created by xiaxing on 16-6-7.
  */
@@ -25,6 +27,7 @@ public class RemoteControl {
     public static final String clientId = "paho-mqtt-clientid-001";
 
     private MqttAndroidClient mMqttAndroidClient;
+    private CopyOnWriteArrayList<MessageListener> mMessageListeners = new CopyOnWriteArrayList<>();
     private Context mContext;
     private String requestUri;
 
@@ -64,6 +67,22 @@ public class RemoteControl {
             return;
 
         mMqttAndroidClient.unregisterResources();
+    }
+
+    public void addListener(MessageListener listener) {
+        if (listener == null)
+            return;
+
+        if (!mMessageListeners.contains(listener))
+            mMessageListeners.add(listener);
+    }
+
+    public void removeListener(MessageListener listener) {
+        if (listener == null)
+            return;
+
+        if (mMessageListeners.contains(listener))
+            mMessageListeners.remove(listener);
     }
 
     public void connect(boolean ssl) {
@@ -109,10 +128,8 @@ public class RemoteControl {
         }).start();
     }
 
-    public void publish() {
-        String sMsg = "lock";
-        byte[] bMsg = sMsg.getBytes();
-        String topic = "control";
+    public void publish(String message, String topic) {
+        byte[] bMsg = message.getBytes();
         try {
             mMqttAndroidClient.publish(topic, bMsg, 0, false);
         } catch (MqttException e) {
@@ -151,7 +168,8 @@ public class RemoteControl {
 
         @Override
         public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-            Log.v(TAG, "mqtt callback messageArrived, s : " + s + "throwable : " + mqttMessage.toString());
+            Log.v(TAG, "mqtt callback messageArrived, s : " + s + ", message : " + mqttMessage.toString());
+            fireMessageArrived(mqttMessage.toString());
         }
 
         @Override
@@ -159,4 +177,10 @@ public class RemoteControl {
             Log.v(TAG, "mqtt callback deliveryComplete, s : " + iMqttDeliveryToken.toString());
         }
     };
+
+    private void fireMessageArrived(final String message) {
+        for (MessageListener listener : mMessageListeners) {
+            listener.onMessageArrived(message);
+        }
+    }
 }

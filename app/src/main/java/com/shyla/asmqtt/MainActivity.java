@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.shyla.security.SecurityUtils;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MQTT.Main";
 
@@ -21,9 +23,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_publish).setOnClickListener(this);
         findViewById(R.id.btn_disconnect).setOnClickListener(this);
         findViewById(R.id.btn_ssl).setOnClickListener(this);
+        findViewById(R.id.btn_parse_bks).setOnClickListener(this);
+        findViewById(R.id.btn_parse_keystore).setOnClickListener(this);
+        findViewById(R.id.btn_parse_tesla).setOnClickListener(this);
 
-        RemoteControl.createInstance(getApplicationContext());
-        mRemoteControl = RemoteControl.getInstance();
+        mRemoteControl = RemoteControl.createInstance(getApplicationContext());
     }
 
     @Override
@@ -62,6 +66,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_ssl:
                 mRemoteControl.connect(true);
+                break;
+            case R.id.btn_parse_keystore:
+                SecurityUtils.parseKeystoreFile(this);
+                break;
+            case R.id.btn_parse_bks:
+                SecurityUtils.parseBKSFile(this);
+                break;
+            case R.id.btn_parse_tesla:
+                SecurityUtils.teslaKeystore(this);
                 break;
         }
     }

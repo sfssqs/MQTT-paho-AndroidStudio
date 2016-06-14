@@ -40,4 +40,23 @@
         android:layout_height="wrap_content"
         android:text="sslConnect" />
 
+    <Button
+        android:id="@+id/btn_parse_bks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ParseBKSFile" />
+
+    <Button
+        android:id="@+id/btn_parse_keystore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ParseKeystoreFile" />
+
+    <Button
+        android:id="@+id/btn_parse_tesla"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ParseTeslaKeystore" />
+
+
 </LinearLayout>

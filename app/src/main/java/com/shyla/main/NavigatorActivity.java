@@ -1,8 +1,12 @@
-package com.shyla.asmqtt;
+package com.shyla.main;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,8 +17,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.shyla.asmqtt.R;
+import com.shyla.main.CertParserFragment.OnFragmentInteractionListener;
+
 public class NavigatorActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ConnectFragment.OnFragmentInteractionListener, OnFragmentInteractionListener {
+
+    private static final String TAG = "NavigatorActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +89,21 @@ public class NavigatorActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        Log.v(TAG, "onNavigationItemSelected, item.id : " + id);
+
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            Fragment connectFragment = new ConnectFragment();
+            transaction.replace(R.id.content, connectFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (id == R.id.nav_gallery) {
-
+            Fragment certParserFragment = new CertParserFragment();
+            transaction.replace(R.id.content, certParserFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -97,5 +117,10 @@ public class NavigatorActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        Log.v(TAG, "onFragmentInteraction");
     }
 }

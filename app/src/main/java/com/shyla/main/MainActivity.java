@@ -1,4 +1,4 @@
-package com.shyla.asmqtt;
+package com.shyla.main;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.shyla.asmqtt.MessageListener;
+import com.shyla.asmqtt.R;
+import com.shyla.asmqtt.RemoteControl;
 import com.shyla.security.SecurityUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

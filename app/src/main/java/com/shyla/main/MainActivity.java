@@ -1,7 +1,6 @@
 package com.shyla.main;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.handleMessage(msg);
             Bundle bundle = msg.getData();
             String info = bundle.getString("info");
-            ((TextView) findViewById(R.id.text_info)).setText("Received info : \n" + info);
+            ((TextView) findViewById(R.id.text_receive_info)).setText("Received info : \n" + info);
         }
     }
 

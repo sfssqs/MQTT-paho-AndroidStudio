@@ -162,7 +162,7 @@
         android:background="#2828FF" />
 
     <TextView
-        android:id="@+id/text_info"
+        android:id="@+id/text_receive_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

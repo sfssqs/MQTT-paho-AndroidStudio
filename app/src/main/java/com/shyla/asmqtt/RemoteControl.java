@@ -24,7 +24,7 @@ public class RemoteControl {
 
     public static final String URI_DEFAULT = "tcp://10.75.3.123:1883";
     public static final String URI_SSL = "ssl://10.75.3.123:8883";
-    public static final String clientId = "paho-mqtt-clientid-001";
+    public static final String clientId = "paho-mqtt-clientid-002";
 
     private MqttAndroidClient mMqttAndroidClient;
     private CopyOnWriteArrayList<MessageListener> mMessageListeners = new CopyOnWriteArrayList<>();

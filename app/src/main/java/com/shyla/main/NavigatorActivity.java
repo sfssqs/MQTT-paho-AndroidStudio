@@ -18,12 +18,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.shyla.asmqtt.R;
-import com.shyla.main.CertParserFragment.OnFragmentInteractionListener;
+import com.shyla.asmqtt.RemoteControl;
 
 public class NavigatorActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ConnectFragment.OnFragmentInteractionListener, OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ConnectFragment.OnFragmentInteractionListener,
+        CertParserFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener,
+        LiveStreamingFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "NavigatorActivity";
+
+    private Fragment connectFragment;
+    private Fragment certParserFragment;
+    private Fragment aboutFragment;
+    private Fragment liveVideoFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +57,38 @@ public class NavigatorActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        connectFragment = ConnectFragment.newInstance(null, null);
+        certParserFragment = CertParserFragment.newInstance(null, null);
+        aboutFragment = AboutFragment.newInstance(null, null);
+        liveVideoFragment = LiveStreamingFragment.newInstance(null, null);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content, connectFragment);
+        transaction.commit();
+
+        RemoteControl.createInstance(getApplicationContext());
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        RemoteControl.getInstance().registerResources(this);
+    }
+
+    @Override
+    protected void onPause() {
+        RemoteControl.getInstance().unregisterResources();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.v(TAG, "onDestroy");
+        RemoteControl.destroyInstance();
+        super.onDestroy();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -86,33 +125,29 @@ public class NavigatorActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Log.v(TAG, "onNavigationItemSelected, item.id : " + id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        Log.v(TAG, "onNavigationItemSelected, item.id : " + id);
-
         if (id == R.id.nav_camera) {
-            // Handle the camera action
-            Fragment connectFragment = new ConnectFragment();
             transaction.replace(R.id.content, connectFragment);
-            transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_gallery) {
-            Fragment certParserFragment = new CertParserFragment();
             transaction.replace(R.id.content, certParserFragment);
-            transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_slideshow) {
-
+            transaction.replace(R.id.content, liveVideoFragment);
+            transaction.commit();
         } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            transaction.replace(R.id.content, aboutFragment);
+            transaction.commit();
         }
+
+//        else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_send) {
+//
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -2,13 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.shyla.main.LiveStreamingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <TextureView
+        android:id="@+id/textureview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Function need to be done" />
+        android:layout_height="match_parent"></TextureView>
 
+    <ImageView
+        android:id="@+id/btn_camera_switcher"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="right|top"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/ic_menu_camera" />
 </FrameLayout>

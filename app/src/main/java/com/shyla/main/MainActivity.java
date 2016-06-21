@@ -125,13 +125,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_parse_keystore:
-                SecurityUtils.parseKeystoreFile(this);
+                SecurityUtils.parseKeystore(this);
                 break;
             case R.id.btn_parse_bks:
-                SecurityUtils.parseBKSFile(this);
+                SecurityUtils.parseBKSCert(this);
                 break;
             case R.id.btn_parse_tesla:
-                SecurityUtils.teslaKeystore(this);
+                SecurityUtils.parseTeslaKeystore(this);
                 break;
         }
     }

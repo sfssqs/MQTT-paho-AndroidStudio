@@ -35,20 +35,106 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 public class SecurityUtils {
-    private static final String TAG = "SecurityUtils";
 
-    public static void teslaKeystore(Context context) {
+    private static final String TAG = SecurityUtils.class.getSimpleName();
+
+    public static void parseBKSCert(Context context) {
+        String password = "ca1234";
+        String fileName = "ca.bks";
+
+        InputStream inputStream = getAssetFile(context, fileName);
+        KeyStore keystore = getKeystore(inputStream, password);
+        Log.v("keyStore, ", "provider : " + keystore.getProvider().toString() + ", type : " + keystore.getType());
+
+        echoKeystore(keystore);
+    }
+
+    public static void parseLeseeCert(Context context) {
+        String password = "changme";
+        String fileName = "mycar";
+
+        InputStream inputStream = getAssetFile(context, fileName);
+        KeyStore keystore = getKeystore(inputStream, password);
+        Log.v("keyStore, ", "provider : " + keystore.getProvider().toString() + ", type : " + keystore.getType());
+
+        echoKeystore(keystore);
+    }
+
+    // error, java.io.IOException: Wrong version of key store.
+    public static void parseKeystore(Context context) {
+        String password = "ca1234";
+        String fileName = "ca.keystore";
+
+        InputStream inputStream = getAssetFile(context, fileName);
+        KeyStore keystore = getKeystore(inputStream, password);
+
+        echoKeystore(keystore);
+    }
+
+    public static void parseTeslaKeystore(Context context) {
         String password = "qXD5wUA3qVySNr39Nc8sFEtKXUr3Mg";
         String fileName = "tesla_trust.keystore";
 
-        KeyPair pair = readKeyPair(context, fileName, password);
-        Log.v(TAG, "publickey : " + pair.getPublic());
+        InputStream inputStream = getAssetFile(context, fileName);
+
+        KeyStore keystore = getKeystore(inputStream, password);
+        echoKeystore(keystore);
     }
 
-    private static KeyPair readKeyPair(Context context, final String keyFile, final String password) {
+    private static void echoKeystore(KeyStore keystore) {
         try {
-            PEMReader reader = new PEMReader(
-                    new InputStreamReader(getAssetFile(context, keyFile)),
+            Enumeration<String> enumeration = keystore.aliases();
+            while (enumeration.hasMoreElements()) {
+                String aliase = enumeration.nextElement();
+                Certificate certificate = keystore.getCertificate(aliase);
+                PublicKey key = certificate.getPublicKey();
+                byte[] encodebyte = key.getEncoded();
+
+                Log.v("keyStore, aliase : ", aliase + ", type : " + certificate.getType() + ", algorithm : " + key.getAlgorithm() + ", format : " + key.getFormat());
+                Log.v(TAG, "encode : " + byte2hex(encodebyte));
+            }
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static KeyStore getKeystore(InputStream inputStream, String password) {
+        try {
+            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keystore.load(inputStream, password.toCharArray());
+            inputStream.close();
+            return keystore;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static InputStream getAssetFile(Context context, String fileName) {
+        Assert.assertNotNull(fileName);
+        InputStream inputStream = null;
+
+        try {
+            inputStream = context.getAssets().open(fileName);
+            return inputStream;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return inputStream;
+    }
+
+    private static KeyPair getKeyPair(InputStream inputStream, final String password) {
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            PEMReader reader = new PEMReader(inputStreamReader,
                     new PasswordFinder() {
                         @Override
                         public char[] getPassword() {
@@ -56,6 +142,7 @@ public class SecurityUtils {
                         }
                     }
             );
+
             KeyPair key = (KeyPair) reader.readObject();
             reader.close();
             return key;
@@ -79,28 +166,18 @@ public class SecurityUtils {
         return null;
     }
 
-    public static SSLSocketFactory Keystore(Context context) {
+    public static SSLSocketFactory getSSLSocketFactory(Context context) {
         try {
             String password = "ca1234";
-            InputStream inputStream = getAssetFile(context, "ca.bks");
+            String fileName = "ca.bks";
 
-            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(inputStream, password.toCharArray());
-            inputStream.close();
+            InputStream inputStream = getAssetFile(context, fileName);
+            KeyStore keystore = getKeystore(inputStream, password);
             Log.v("keyStore, ", "provider : " + keystore.getProvider().toString() + ", type : " + keystore.getType());
 
-            Enumeration<String> enumeration = keystore.aliases();
-            while (enumeration.hasMoreElements()) {
-                String aliase = enumeration.nextElement();
-                Certificate certificate = keystore.getCertificate(aliase);
-                PublicKey key = certificate.getPublicKey();
-                byte[] encodebyte = key.getEncoded();
+            // just for debug, log output
+            echoKeystore(keystore);
 
-                Log.v("keyStore, aliase : ", aliase + ", type : " + certificate.getType() + ", algorithm : " + key.getAlgorithm() + ", format : " + key.getFormat());
-                Log.v(TAG, "encode : " + byte2hex(encodebyte));
-            }
-
-            ////////////////////////////////
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("X509");
             trustManagerFactory.init(keystore);
             TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
@@ -128,10 +205,6 @@ public class SecurityUtils {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (UnrecoverableKeyException e) {
             e.printStackTrace();
         } catch (KeyManagementException e) {
@@ -139,80 +212,6 @@ public class SecurityUtils {
         }
 
         return null;
-    }
-
-    public static void parseBKSFile(Context context) {
-        try {
-            String password = "ca1234";
-            InputStream inputStream = getAssetFile(context, "ca.bks");
-            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(inputStream, password.toCharArray());
-            inputStream.close();
-            Log.v("keyStore, ", "provider : " + keystore.getProvider().toString() + ", type : " + keystore.getType());
-            echoKeystore(keystore);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // error, java.io.IOException: Wrong version of key store.
-    public static void parseKeystoreFile(Context context) {
-        try {
-            String password = "ca1234";
-            InputStream inputStream = getAssetFile(context, "ca.keystore");
-            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(inputStream, password.toCharArray());
-            inputStream.close();
-            echoKeystore(keystore);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void echoKeystore(KeyStore keystore) {
-        try {
-            Enumeration<String> enumeration = keystore.aliases();
-            while (enumeration.hasMoreElements()) {
-                String aliase = enumeration.nextElement();
-                Certificate certificate = null;
-
-                certificate = keystore.getCertificate(aliase);
-
-                PublicKey key = certificate.getPublicKey();
-                byte[] encodebyte = key.getEncoded();
-
-                Log.v("keyStore, aliase : ", aliase + ", type : " + certificate.getType() + ", algorithm : " + key.getAlgorithm() + ", format : " + key.getFormat());
-                Log.v(TAG, "encode : " + byte2hex(encodebyte));
-            }
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static InputStream getAssetFile(Context context, String fileName) {
-        Assert.assertNotNull(fileName);
-        InputStream inputStream = null;
-
-        try {
-            inputStream = context.getAssets().open(fileName);
-            return inputStream;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return inputStream;
     }
 
     public static void testSslRequest() {

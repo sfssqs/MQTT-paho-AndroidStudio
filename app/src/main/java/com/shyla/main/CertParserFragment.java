@@ -76,6 +76,7 @@ public class CertParserFragment extends Fragment implements View.OnClickListener
         view.findViewById(R.id.btn_parse_bks).setOnClickListener(this);
         view.findViewById(R.id.btn_parse_keystore).setOnClickListener(this);
         view.findViewById(R.id.btn_parse_tesla).setOnClickListener(this);
+        view.findViewById(R.id.btn_parse_mycar).setOnClickListener(this);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,14 +107,16 @@ public class CertParserFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_parse_keystore:
-                SecurityUtils.parseKeystoreFile(getContext());
+                SecurityUtils.parseKeystore(getContext());
                 break;
             case R.id.btn_parse_bks:
-                SecurityUtils.parseBKSFile(getContext());
+                SecurityUtils.parseBKSCert(getContext());
                 break;
             case R.id.btn_parse_tesla:
-                SecurityUtils.teslaKeystore(getContext());
+                SecurityUtils.parseTeslaKeystore(getContext());
                 break;
+            case R.id.btn_parse_mycar:
+                SecurityUtils.parseLeseeCert(getContext());
         }
     }
 

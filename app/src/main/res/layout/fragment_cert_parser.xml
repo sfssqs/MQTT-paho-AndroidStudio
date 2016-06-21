@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
-    android:padding="10dp"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context="com.shyla.main.CertParserFragment">
 
     <TextView
@@ -23,21 +23,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/btn_parse_bks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="BKSFile" />
+            android:text="BKSCert" />
+
+        <Button
+            android:id="@+id/btn_parse_mycar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MyCarCert" />
 
         <Button
             android:id="@+id/btn_parse_keystore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="KeystoreFile" />
+            android:text="KeyStore" />
 
         <Button
             android:id="@+id/btn_parse_tesla"
@@ -45,7 +52,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="TeslaKeystore" />
-
     </LinearLayout>
 
 </LinearLayout>
